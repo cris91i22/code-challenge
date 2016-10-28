@@ -5,18 +5,29 @@ import com.code.challenge.services._
 
 object Main extends App {
 
-  /// leo from reader y levanto el storages/s
+  println("################################### \n")
+  println("Load application\n")
+  println("Reading files and map to model...\n")
+  val userStorage = FileReader.users
+  val genreStorage = FileReader.genres
+  val movieStorage = FileReader.movies
+  val ratingStorage = FileReader.ratings
 
-  println("Reading files and map to model...")
 
-  val userService = UserService(FileReader.u2, FileReader.r2, FileReader.m2)
-  val genreService = GenreService(FileReader.g2)
-  val movieService = MovieService(FileReader.m2)
-  val ratingService = RatingService(FileReader.r2)
+  println("################################### \n")
+  println("Creating services to be used... \n")
+  val ratingService = new RatingService(ratingStorage)
+  val movieService = new MovieService(movieStorage)
+  val genreService = new GenreService(genreStorage)
+  val userService = new UserService(userStorage, ratingService, movieService)
 
-//  println(a.findAllRatingsBy("64"))
-//  println(a.getAverageRatingBy("64"))
-//  println(a.getFavoriteGenreBy("1"))
+
+  println("###################################\n")
+  println("Test services...\n")
+  println(ratingService.findAllByMovie(10L))
+  println(ratingService.getAverageRatingBy(64L))
+  println(userService.getFavoriteGenreBy(10L))
+  println(userService.getMoviesRecommendation(1L))
 
 }
 
