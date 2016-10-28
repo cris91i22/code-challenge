@@ -1,11 +1,16 @@
 package com.code.challenge.model
 
-case class User(id: String,
-                ratings: List[Rating])
+case class User(id: Long,
+                ratings: List[UserRating])
 
-case class Rating(movieId: String,
-                  score: String)
+case class UserRating(movieId: Long,
+                      score: Int)
 
-case class Movie(id: String,
+case class Movie(id: Long,
                  title: String,
                  genres: List[String])
+
+
+case class Rating(userId: Long,
+                  movieId: Long,
+                  score: Int)
