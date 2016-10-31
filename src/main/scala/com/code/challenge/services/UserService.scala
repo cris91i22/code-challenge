@@ -4,6 +4,9 @@ import com.code.challenge.model.{Rating, User, UserRating}
 
 class UserService(val userStorage: List[Long], val ratingService: RatingService, val movieService: MovieService) {
 
+  /**
+    * Group each movie with his rates
+    */
   val moviesWithRatings: Map[Long, List[Rating]] = ratingService.findAll.groupBy(_.movieId).map{ case (k, value) => k -> value.sortWith(_.score > _.score) }
 
 
@@ -23,7 +26,7 @@ class UserService(val userStorage: List[Long], val ratingService: RatingService,
     }
   }
 
-  def getMoviesRecommendation(userId: Long) = {
+  def getMoviesRecommendation(userId: Long): Option[List[UserRating]] = {
     def bestRate = {ratings: List[UserRating] => ratings.sortWith{_.score > _.score} }
 
     /**
@@ -35,22 +38,22 @@ class UserService(val userStorage: List[Long], val ratingService: RatingService,
     /**
       * Obtain movies from best movies rated by {userId}
       */
-    val movies: Iterable[Rating] = bestMoviesRated.flatMap(moviesWithRatings)
+    val movies: Iterable[Rating] = bestMoviesRated.map(moviesWithRatings).foldLeft(List[Rating]()){ case (s, v) => s ::: v.take(4) }
 
     /**
-      * Obtain all ratings from best movies rated {userId}
+      * Filter movies with same {userId}
       */
-    val usersEquallyRate: Iterable[Rating] = movies.filter(_.userId != userId).take(3)
+    val usersEquallyRate: Iterable[Rating] = movies.filter(_.userId != userId)
 
     /**
-      * Obtain other users movies rated
+      * Obtain other users who rated movies
       */
     val otherUsersMovies: Iterable[UserRating] = usersEquallyRate.flatMap(r => findOneBy(r.userId)).flatMap(x => bestRate(x.ratings.filterNot(x => bestMoviesRated.exists(_ == x.movieId))).take(3))
 
     /**
       * diff between other users movies and {userId} movies
       */
-    usrRatings.map{x => otherUsersMovies.toList diff x}
+    usrRatings.map{x => (otherUsersMovies.toList diff x).distinct}
 
   }
 

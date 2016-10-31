@@ -3,8 +3,7 @@ package com.code.challenge.repository
 trait Reader {
 
   /**
-    *
-    *
+    * Split file into lines with a delimiter
     *
     * @param filePath
     * @param delimiter

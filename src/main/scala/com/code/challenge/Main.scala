@@ -15,7 +15,7 @@ object Main extends App {
 
 
   println("################################### \n")
-  println("Creating services to be used... \n")
+  println("Creating services for use... \n")
   val ratingService = new RatingService(ratingStorage)
   val movieService = new MovieService(movieStorage)
   val genreService = new GenreService(genreStorage)
@@ -23,7 +23,7 @@ object Main extends App {
 
 
   println("###################################\n")
-  println("Test services...\n")
+  println("Services test...\n")
   println(ratingService.findAllByMovie(10L))
   println(ratingService.getAverageRatingBy(64L))
   println(userService.getFavoriteGenreBy(10L))
