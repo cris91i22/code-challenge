@@ -24,7 +24,7 @@ class UserService(val userStorage: List[Long], val ratingService: RatingService,
     genres <- movieService.findOneBy(bestRate.movieId).map(_.genres)
   } yield genres) getOrElse Nil
 
-  def getMoviesRecommendation(userId: Long): Option[List[UserRating]] = {
+  def getMoviesRecommendation(userId: Long): List[UserRating] = {
     val bestRate = {ratings: List[UserRating] => ratings.sortBy(- _.score) }
 
     /**
@@ -51,7 +51,7 @@ class UserService(val userStorage: List[Long], val ratingService: RatingService,
     /**
       * diff between other users movies and {userId} movies
       */
-    usrRatings.map{x => (otherUsersMovies.toList diff x).distinct}
+    usrRatings.map{x => (otherUsersMovies.toList diff x).distinct} getOrElse Nil
 
   }
 

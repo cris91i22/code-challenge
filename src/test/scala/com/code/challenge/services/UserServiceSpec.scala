@@ -39,16 +39,17 @@ class UserServiceSpec extends Specification {
 
     "Find one user by {userId}" in new MyDataSet {
       service.findOneBy(2L) must beSome
+      service.findOneBy(2112L) must beNone
     }
 
     "Favorite genre by {userId}" in new MyDataSet {
-      val favorite = service.getFavoriteGenreBy(1L)
-      favorite mustEqual List("Action")
+      service.getFavoriteGenreBy(1L) mustEqual List("Action")
+      service.getFavoriteGenreBy(90L) mustEqual Nil
     }
 
     "Movies recommendation by {userId}" in new MyDataSet {
-      val reco = service.getMoviesRecommendation(1L)
-      reco must beSome(List(UserRating(4L, 5)))
+      service.getMoviesRecommendation(1L) mustEqual List(UserRating(4L, 5))
+      service.getMoviesRecommendation(90L) mustEqual Nil
     }
 
     "Find all users in all data set" in new DataSet {
@@ -69,9 +70,7 @@ class UserServiceSpec extends Specification {
     }
 
     "Movies recommendation by {userId} in all data set" in new DataSet {
-      val reco = service.getMoviesRecommendation(1L)
-      reco must beSome
-      reco.get must contain(UserRating(276L, 5))
+      service.getMoviesRecommendation(1L) must contain(UserRating(276L, 5))
     }
 
   }

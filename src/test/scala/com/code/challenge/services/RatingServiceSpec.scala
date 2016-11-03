@@ -35,8 +35,8 @@ class RatingServiceSpec extends Specification {
     }
 
     "Get average rating by movie id" in new MyDataSet {
-      val rating = service.getAverageRatingBy(1L)
-      rating mustEqual 4.5
+      service.getAverageRatingBy(1L) mustEqual 4.5
+      service.getAverageRatingBy(100L) mustEqual 0
     }
 
     "Get average rating by movie id in all data set" in new DataSet {
