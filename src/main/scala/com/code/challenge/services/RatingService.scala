@@ -11,8 +11,13 @@ class RatingService(val ratingStorage: List[Rating]) {
   def findAllByMovie(movieId: Long): List[Rating] = ratingStorage.filter(_.movieId == movieId)
 
   def getAverageRatingBy(movieId: Long): Double = {
-    val rates = findAllByMovie(movieId).map(_.score)
-    rates.sum.toDouble / rates.size.toDouble
+    findAllByMovie(movieId) match {
+      case Nil => 0
+      case movies => val rates = movies.map(_.score)
+        rates.sum.toDouble / rates.size.toDouble
+    }
+
+
   }
 
 }

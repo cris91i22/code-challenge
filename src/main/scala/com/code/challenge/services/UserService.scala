@@ -7,7 +7,7 @@ class UserService(val userStorage: List[Long], val ratingService: RatingService,
   /**
     * Group each movie with his rates
     */
-  val moviesWithRatings: Map[Long, List[Rating]] = ratingService.findAll.groupBy(_.movieId).map{ case (k, value) => k -> value.sortWith(_.score > _.score) }
+  val moviesWithRatings: Map[Long, List[Rating]] = ratingService.findAll.groupBy(_.movieId).map{ case (k, value) => k -> value.sortBy(- _.score) }
 
 
   def findAll: List[User] = userStorage.map { id =>
@@ -19,15 +19,13 @@ class UserService(val userStorage: List[Long], val ratingService: RatingService,
 
   def findOneBy(userId: Long): Option[User] = findAll.find(_.id == userId)
 
-  def getFavoriteGenreBy(userId: Long): Option[List[String]] = {
-    val bestRate = findOneBy(userId).map(_.ratings).flatMap(_.sortWith{case (r1, r2) => r1.score > r2.score}.headOption)
-    bestRate.flatMap{ r =>
-      movieService.findOneBy(r.movieId).map(_.genres)
-    }
-  }
+  def getFavoriteGenreBy(userId: Long): List[String] = (for {
+    bestRate <- findOneBy(userId).map(_.ratings).flatMap(_.sortBy(- _.score).headOption)
+    genres <- movieService.findOneBy(bestRate.movieId).map(_.genres)
+  } yield genres) getOrElse Nil
 
   def getMoviesRecommendation(userId: Long): Option[List[UserRating]] = {
-    def bestRate = {ratings: List[UserRating] => ratings.sortWith{_.score > _.score} }
+    val bestRate = {ratings: List[UserRating] => ratings.sortBy(- _.score) }
 
     /**
       * Get best movies rated by {userId}

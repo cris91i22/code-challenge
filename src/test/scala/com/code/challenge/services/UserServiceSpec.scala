@@ -43,8 +43,7 @@ class UserServiceSpec extends Specification {
 
     "Favorite genre by {userId}" in new MyDataSet {
       val favorite = service.getFavoriteGenreBy(1L)
-      favorite must beSome
-      favorite.get mustEqual List("Action")
+      favorite mustEqual List("Action")
     }
 
     "Movies recommendation by {userId}" in new MyDataSet {
@@ -66,8 +65,7 @@ class UserServiceSpec extends Specification {
 
     "Favorite genre by {userId} in all data set" in new DataSet {
       val favorite = service.getFavoriteGenreBy(1L)
-      favorite must beSome
-      favorite.get mustEqual List("Comedy", "Romance")
+      favorite mustEqual List("Comedy", "Romance")
     }
 
     "Movies recommendation by {userId} in all data set" in new DataSet {
